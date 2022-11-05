@@ -3,17 +3,22 @@ import { Link } from "react-router-dom";
 
 const CollegeList = () => {
   const [collegeName, setcollegeName] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const fetchData =  async (e) => {
+    setIsLoading(true)
     const query = e.target.value
     const response = await fetch(`http://universities.hipolabs.com/search?name=${query}&country=India`)
     const data = await response.json()
+    setIsLoading(false)
     setcollegeName(data)
   }
 
   const initialFetchData = async () => {
+    setIsLoading(true)
     const response = await fetch("http://universities.hipolabs.com/search?country=India")
     const data = await response.json()
+    setIsLoading(false)
     setcollegeName(data)
   }
 
@@ -36,26 +41,28 @@ const CollegeList = () => {
           </label>
         </div>
       </div>
-      {collegeName.length > 0 ? (
-        <div>
-          {collegeName.map((college, i) => (
-            <div className="flex flex-col md:flex-row md:items-center py-[10px] md:py-[20px] border-b md:last:border-b-0" key={i}>
-              <div className="basis-[80%] md:mr-[25px]">
-                <h5 className="text-[#191919] text-[24px] text-left leading-[32px] font-bold max-w-[700px] pb-[2px]">{college.name}</h5>
-                <div className="flex">
-                  <p className="text-[10px] text-[#191919] font-semibold px-[8px] py-[4px] border-[1px] border-solid border-[#505761] rounded-[5px] bg-[#ffe1d7]">{(college['state-province'] ? college['state-province']+',': '')} {college.country}</p>
+      {isLoading ? <p className="text-[#191919] text-[36px] text-center leading-[32px] font-extrabold my-[60px]">Loading...</p> :
+        collegeName.length > 0 ? (
+          <div>
+            {collegeName.map((college, i) => (
+              <div className="flex flex-col md:flex-row md:items-center py-[10px] md:py-[20px] border-b md:last:border-b-0" key={i}>
+                <div className="basis-[80%] md:mr-[25px]">
+                  <h5 className="text-[#191919] text-[24px] text-left leading-[32px] font-bold max-w-[700px] pb-[2px]">{college.name}</h5>
+                  <div className="flex">
+                    <p className="text-[10px] text-[#191919] font-semibold px-[8px] py-[4px] border-[1px] border-solid border-[#505761] rounded-[5px] bg-[#ffe1d7]">{(college['state-province'] ? college['state-province']+',': '')} {college.country}</p>
+                  </div>
+                </div>
+                <div className="basis-[10%] md:mr-[25px]">
+                  <a href={college.web_pages} className="text-[#191919] text-[16px] leading-[28px] font-semibold flex items-center justify-center border-transparent rounded transition-all duration-300 ease-in py-[7px] px-[14px] bg-[#dceae5] hover:bg-[#fef4de]">Website</a>
+                </div>
+                <div className="basis-[10%]">
+                  <Link to={`/college/${college.name}`} className="text-[#191919] text-[16px] leading-[28px] font-semibold flex items-center justify-center border-transparent rounded transition-all duration-300 ease-in py-[7px] px-[14px] bg-[#dceae5] hover:bg-[#fef4de]">View More</Link>
                 </div>
               </div>
-              <div className="basis-[10%] md:mr-[25px]">
-                <a href={college.web_pages} className="text-[#191919] text-[16px] leading-[28px] font-semibold flex items-center justify-center border-transparent rounded transition-all duration-300 ease-in py-[7px] px-[14px] bg-[#dceae5] hover:bg-[#fef4de]">Website</a>
-              </div>
-              <div className="basis-[10%]">
-                <Link to={`/college/${college.name}`} className="text-[#191919] text-[16px] leading-[28px] font-semibold flex items-center justify-center border-transparent rounded transition-all duration-300 ease-in py-[7px] px-[14px] bg-[#dceae5] hover:bg-[#fef4de]">View More</Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (<p className="text-[#191919] text-[36px] text-center uppercase leading-[32px] font-extrabold my-[60px]">No Results Found</p>)}
+            ))}
+          </div>
+        ) : (<p className="text-[#191919] text-[36px] text-center uppercase leading-[32px] font-extrabold my-[60px]">No Results Found</p>)
+      }
     </div>
   )
 }
