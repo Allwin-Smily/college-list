@@ -81,6 +81,17 @@ function App() {
       <div className="App w-[88%] mx-auto max-w-[1300px]">
         <Routes>
           <Route
+            path='/'
+            element={
+              <Form
+                title="Register"
+                setEmail={setEmail}
+                setPassword={setPassword}
+                setConfirmPassword={setConfirmPassword}
+                handleAction={() => handleAction(2)}
+                isLogin={false} />}
+          />
+          <Route
             path='/login'
             element={
               <Form
